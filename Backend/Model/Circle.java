@@ -29,7 +29,7 @@ public class Circle extends Figure {
     @Override
     public boolean figureBelongs(Point topleft, Point bottomright) {
         boolean found;
-        found=topleft.getY()>centerPoint.getY()+getRadius() && bottomright.getY()<centerPoint.getY()-getRadius() && topleft.getX()<centerPoint.getX()-getRadius() && bottomright.getX()>centerPoint.getX()+getRadius();
+        found=topleft.getY()<centerPoint.getY()-getRadius() && bottomright.getY()>centerPoint.getY()+getRadius() && topleft.getX()<centerPoint.getX()-getRadius() && bottomright.getX()>centerPoint.getX()+getRadius();
         return found;
     }
     @Override

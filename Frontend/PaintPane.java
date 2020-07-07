@@ -65,11 +65,7 @@ public class PaintPane extends BorderPane {
         }
         VBox buttonsBox = new VBox(10);
         buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().add(7,borderCaption);
-        buttonsBox.getChildren().add(8,borders);
-        buttonsBox.getChildren().add(9,bordercolor);
-        buttonsBox.getChildren().add(10,fillerCaption);
-        buttonsBox.getChildren().add(11,fillercolor);
+        buttonsBox.getChildren().addAll(borderCaption,borders,bordercolor,fillerCaption,fillercolor);
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
@@ -97,13 +93,35 @@ public class PaintPane extends BorderPane {
                 newFigure= new Ellipse(startPoint,endPoint);
             }else if(squareButton.isSelected()) {
                 newFigure = new Square(startPoint, endPoint);
-            }else if(borders.isValueChanging()) {//AJUSTE DE GROSOR DE BORDE
-                gc.setLineWidth(borders.getValue());
-            }else if(eraseButton.isSelected()){
-                canvasState.removeFigures(startPoint,endPoint);
-                return;
-            }else{return;}
-            canvasState.addFigure(newFigure);
+            }else if(selectionButton.isSelected()){
+                canvasState.clearSelection();
+                boolean found = false;
+                StringBuilder label = new StringBuilder("Se seleccionó: ");
+                for (Figure figure : canvasState.figures()){
+                    if(figure.figureBelongs(startPoint,endPoint)){
+                        found=true;
+                        label.append(figure.toString());
+                        canvasState.addSelection(figure);
+                    }
+                }
+                if(found){
+                    bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion general de color de borde y relleno
+                        @Override
+                        public void handle(ActionEvent event) {
+                            selectedFigure.setColor(bordercolor.getValue());
+                            redrawCanvas();
+                        }
+                    });
+                    statusPane.updateStatus(label.toString());//REVISAR
+                }else {
+                    selectedFigure = null;
+                    statusPane.updateStatus("Ninguna figura encontrada");
+                }
+            }
+            else {return;}
+            if(newFigure!=null) {
+                canvasState.addFigure(newFigure);
+            }
             startPoint = null;
             redrawCanvas();
         });
@@ -145,9 +163,9 @@ public class PaintPane extends BorderPane {
             }
         });
         canvas.setOnMouseClicked(event -> {
-            if(eraseButton.isSelected()) {//BORRADO SINGULAR
-                Point eventpoint = new Point(event.getX(), event.getY());
-                canvasState.removeFigure(eventpoint);
+            if(eraseButton.isSelected()){
+                canvasState.removeSelection();
+                canvasState.clearSelection();
                 redrawCanvas();
             }else if(selectionButton.isSelected()) {//SELECCION DE FIGURA
                 Point eventPoint = new Point(event.getX(), event.getY());
@@ -156,7 +174,8 @@ public class PaintPane extends BorderPane {
                 for (Figure figure : canvasState.figures()) {
                     if(figure.figureBelongs(eventPoint)) {
                         found = true;
-                        selectedFigure = figure;
+                        selectedFigure=figure;
+                        canvasState.addSelection(figure);
                         label.append(figure.toString());
                     }
                 }
@@ -181,7 +200,9 @@ public class PaintPane extends BorderPane {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
                 double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
-                selectedFigure.move(diffX,diffY);
+                 for(Figure figure:canvasState.getselectedfigures()){
+                     figure.move(diffX,diffY);
+                 }
                 redrawCanvas();
             }
         });
@@ -192,7 +213,7 @@ public class PaintPane extends BorderPane {
     void redrawCanvas() {//TRAZADO DE FIGURAS
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for(Figure figure : canvasState.figures()) {
-            if(figure == selectedFigure) {
+            if(figure ==selectedFigure||canvasState.containsselection(figure)) {
                 gc.setStroke(Color.RED);
             } else {
                 gc.setStroke(figure.getColor());

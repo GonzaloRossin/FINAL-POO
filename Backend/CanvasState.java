@@ -10,29 +10,20 @@ import java.util.List;
 public class CanvasState {
 
     private final List<Figure> list = new ArrayList<>();
+    private  List<Figure> selectedfigures=new ArrayList<>();
 
-    public void addFigure(Figure figure) {
-        list.add(figure);
-    }
-    public void removeFigure(Point eventPoint){
-        int i=0;
-        for(Figure aux : list){
-            if(aux.figureBelongs(eventPoint)){
-                list.remove(i);
-                return;
-            }
-            i++;
-        }
-    }
-    public void removeFigures(Point startPoint,Point endpoint) {
-        int i = 0;
-        for (Figure aux : list) {
-            if (aux.figureBelongs(startPoint, endpoint)) {
-                list.remove(i);
-            }
-            i++;
-        }
-    }
+    public void addFigure(Figure figure) {list.add(figure);}
+    public Iterable<Figure> getselectedfigures(){return new ArrayList<>(selectedfigures);}
     public Iterable<Figure> figures() { return new ArrayList<>(list); }
+    public void addSelection(Figure figure){ selectedfigures.add(figure);}
+    public boolean containsselection(Figure figure){return selectedfigures.contains(figure);}
+    public void clearSelection(){selectedfigures.clear();}
+    public void removeSelection(){
+        if(selectedfigures==null)
+            return;
+        for(Figure figure:selectedfigures){
+            list.remove(figure);
+        }
+    }
 
 }
