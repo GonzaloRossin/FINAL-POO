@@ -44,7 +44,7 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
-        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton,ellipseButton,lineButton,squareButton};
+        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton,ellipseButton,lineButton,squareButton,eraseButton};
         ToggleGroup tools = new ToggleGroup();
         for (ToggleButton tool : toolsArr) {
             tool.setMinWidth(90);
@@ -93,7 +93,7 @@ public class PaintPane extends BorderPane {
             boolean found = false;
             StringBuilder label = new StringBuilder();
             for(Figure figure : canvasState.figures()) {
-                if(figureBelongs(figure, eventPoint)) {
+                if(figure.figureBelongs(eventPoint)) {
                     found = true;
                     label.append(figure.toString());
                 }
@@ -104,14 +104,20 @@ public class PaintPane extends BorderPane {
                 statusPane.updateStatus(eventPoint.toString());
             }
         });
-
+        canvas.setOnMouseClicked(event -> {//BORRADO DE FIGURAS
+            if(eraseButton.isSelected()) {
+                Point eventpoint = new Point(event.getX(), event.getY());
+                canvasState.removeFigure(eventpoint);
+                redrawCanvas();
+            }
+        });
         canvas.setOnMouseClicked(event -> {
             if(selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 boolean found = false;
                 StringBuilder label = new StringBuilder("Se seleccionó: ");
                 for (Figure figure : canvasState.figures()) {
-                    if(figureBelongs(figure, eventPoint)) {
+                    if(figure.figureBelongs(eventPoint)) {
                         found = true;
                         selectedFigure = figure;
                         label.append(figure.toString());
