@@ -107,27 +107,21 @@ public class PaintPane extends BorderPane {
                     bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion multiple de color de borde
                         @Override
                         public void handle(ActionEvent event) {
-                            for(Figure figure : canvasState.getselectedfigures()){
-                                figure.setBordercolor(bordercolor.getValue());
-                            }
+                            canvasState.changeLineColor(bordercolor.getValue());
                             redrawCanvas();
                         }
                     });
                     fillercolor.setOnAction(new EventHandler<ActionEvent>() {//SELECCION MULTIPLE DE COLOR DE RELLENO
                         @Override
                         public void handle(ActionEvent event) {
-                            for(Figure figure : canvasState.getselectedfigures()){
-                                figure.setFillercolor(fillercolor.getValue());
-                            }
+                            canvasState.changeFillColor(fillercolor.getValue());
                             redrawCanvas();
                         }
                     });
                     borders.valueProperty().addListener(new ChangeListener<Number>() {//SELECCION MULTIPLE DE GROSOR DE BORDE PARA SELECCIONES
                         @Override
                         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                            for(Figure figure : canvasState.getselectedfigures()){
-                                figure.setLinewidth(newValue.doubleValue());
-                            }
+                            canvasState.changeLineWidth(newValue.doubleValue());
                             redrawCanvas();
                         }
                     });
@@ -208,9 +202,7 @@ public class PaintPane extends BorderPane {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
                 double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
-                 for(Figure figure:canvasState.getselectedfigures()){
-                     figure.move(diffX,diffY);
-                 }
+                canvasState.moveSelection(diffX,diffY);
                 redrawCanvas();
             }
         });

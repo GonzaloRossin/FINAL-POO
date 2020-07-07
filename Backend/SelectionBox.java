@@ -2,6 +2,7 @@ package POO.F_JULIO.Backend;
 
 import POO.F_JULIO.Backend.Model.Figure;
 import POO.F_JULIO.Backend.Model.Point;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,4 +41,24 @@ public class SelectionBox {//CLASE QUE MANEJA LA SELECCION DE FIGURAS
     public boolean selectionIsEmpty(){return selection.isEmpty();}
     public void clearSelection(){selection.clear();}
     public Iterable<Figure> getSelection(){return new ArrayList<>(selection);}
+    public void changeLineWidth(double value){
+        for(Figure figure : selection){
+            figure.setLinewidth(value);
+        }
+    }
+    public void changeLineColor(Color color){//CAMBIO DE COLOR DE LINEA DE SELECCIONES
+        for(Figure figure : selection){
+            figure.setBordercolor(color);
+        }
+    }
+    public void changeFillColor(Color color){// CAMBIO DE RELLENO DE SELECCIONES
+        for(Figure figure : selection){
+            figure.setFillercolor(color);
+        }
+    }
+    public void moveSelection(double diffX,double diffY){//CAMBIO DE TAMAÑO DE BORDE DE SELECCIONES
+        for(Figure figure:selection){
+            figure.move(diffX,diffY);
+        }
+    }
 }

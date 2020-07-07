@@ -3,6 +3,7 @@ package POO.F_JULIO.Backend;
 
 import POO.F_JULIO.Backend.Model.Figure;
 import POO.F_JULIO.Backend.Model.Point;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -36,4 +37,8 @@ public class CanvasState {
         list.remove(selectedfigure);
         list.addFirst(selectedfigure);
     }
+    public void moveSelection(double deltax,double deltay){selection.moveSelection(deltax,deltay);}
+    public void changeLineColor(Color color){selection.changeLineColor(color);}
+    public void changeFillColor(Color color){selection.changeFillColor(color);}
+    public void changeLineWidth(double value){selection.changeLineWidth(value);}
 }
