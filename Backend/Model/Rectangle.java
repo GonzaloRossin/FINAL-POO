@@ -21,5 +21,11 @@ public class Rectangle extends Figure {
     public String toString() {
         return String.format("Rectángulo [ %s , %s ]", topLeft, bottomRight);
     }
+    public double base() {
+        return Math.abs(topLeft.getX() - bottomRight.getX());
+    }
+    public double height() {
+        return Math.abs(topLeft.getY() - bottomRight.getY());
+    }
 
 }

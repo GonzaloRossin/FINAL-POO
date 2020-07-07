@@ -27,6 +27,9 @@ public class PaintPane extends BorderPane {
     ToggleButton selectionButton = new ToggleButton("Seleccionar");
     ToggleButton rectangleButton = new ToggleButton("Rectángulo");
     ToggleButton circleButton = new ToggleButton("Círculo");
+    ToggleButton lineButton = new ToggleButton("Linea");
+    ToggleButton squareButton = new ToggleButton("Cuadrado");
+    ToggleButton ellipseButton = new ToggleButton("Elipse");
 
     // Dibujar una figura
     Point startPoint;
@@ -40,7 +43,7 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
-        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton};
+        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton,ellipseButton,lineButton,squareButton};
         ToggleGroup tools = new ToggleGroup();
         for (ToggleButton tool : toolsArr) {
             tool.setMinWidth(90);
@@ -71,7 +74,13 @@ public class PaintPane extends BorderPane {
             else if(circleButton.isSelected()) {
                 double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
                 newFigure = new Circle(startPoint, circleRadius);
-            } else {
+            }else if(lineButton.isSelected()) {
+                newFigure = new Line(startPoint, endPoint);
+            }else if(ellipseButton.isSelected()){
+                newFigure= new Ellipse(startPoint,endPoint);
+            }else if(squareButton.isSelected()) {
+                newFigure = new Square(startPoint, endPoint);
+            }else {
                 return ;
             }
             canvasState.addFigure(newFigure);
@@ -148,17 +157,29 @@ public class PaintPane extends BorderPane {
                 gc.setStroke(lineColor);
             }
             gc.setFill(fillColor);
-            if(figure instanceof Rectangle) {
+            if(figure instanceof Readable){
+            if(figure instanceof Ellipse){
+                Ellipse elipse=(Ellipse) figure;
+                gc.strokeOval(elipse.getTopLeft().x,elipse.getTopLeft().y,elipse.base(),elipse.height());
+                gc.fillOval(elipse.getTopLeft().x,elipse.getTopLeft().y,elipse.base(),elipse.height());
+            }
+            else if(figure instanceof Square){
+                Square square=(Square) figure;
+                gc.strokeRect(square.getTopLeft().x,square.getTopLeft().y,square.Side(),square.Side());
+                gc.fillRect(square.getTopLeft().x,square.getTopLeft().y,square.Side(),square.Side());
+            }else {
                 Rectangle rectangle = (Rectangle) figure;
-                gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                        Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()), Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-                gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(),
-                        Math.abs(rectangle.getTopLeft().getX() - rectangle.getBottomRight().getX()), Math.abs(rectangle.getTopLeft().getY() - rectangle.getBottomRight().getY()));
-            } else if(figure instanceof Circle) {
+                gc.fillRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(), rectangle.base(), rectangle.height());
+                gc.strokeRect(rectangle.getTopLeft().getX(), rectangle.getTopLeft().getY(), rectangle.base(), rectangle.height());
+            }
+            }else if(figure instanceof Circle) {
                 Circle circle = (Circle) figure;
                 double diameter = circle.getRadius() * 2;
                 gc.fillOval(circle.getCenterPoint().getX() - circle.getRadius(), circle.getCenterPoint().getY() - circle.getRadius(), diameter, diameter);
                 gc.strokeOval(circle.getCenterPoint().getX() - circle.getRadius(), circle.getCenterPoint().getY() - circle.getRadius(), diameter, diameter);
+            }else if(figure instanceof Line){
+                Line line=(Line) figure;
+                gc.strokeLine(line.getP1().x,line.getP1().y,line.getP2().x,line.getP2().y);
             }
         }
     }
