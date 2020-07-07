@@ -26,7 +26,10 @@ public class Line extends Figure {
     }
     @Override
     public void move(double deltax, double deltay) {
-
+        p1.x+=deltax;
+        p1.y+=deltay;
+        p2.x+=deltax;
+        p2.y+=deltay;
     }
     @Override
     public String toString() {

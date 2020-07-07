@@ -14,5 +14,5 @@ public abstract class Figure{
     }
     public abstract void move(double deltax,double deltay);
     public abstract boolean figureBelongs(Point eventPoint);
-    public abstract boolean figureBelongs(Point topleft,Point bottomright);
+    public abstract boolean figureBelongs(Point startpoint,Point endpoint);
 }
