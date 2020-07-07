@@ -23,8 +23,6 @@ public class PaintPane extends BorderPane {
     // Canvas y relacionados
     Canvas canvas = new Canvas(800, 600);
     GraphicsContext gc = canvas.getGraphicsContext2D();
-    Color lineColor = Color.BLACK;
-    Color fillColor = Color.YELLOW;
 
     // Botones Barra Izquierda
     private ToggleButton selectionButton = new ToggleButton("Seleccionar");
@@ -40,10 +38,10 @@ public class PaintPane extends BorderPane {
     //Bordes de figura
     private Slider borders = new Slider(1, 10, 1);
     private Label borderCaption=new Label("Borde:");
-    private ColorPicker bordercolor= new ColorPicker(lineColor);
+    private ColorPicker bordercolor= new ColorPicker(Color.BLACK);
     //Relleno
     private Label fillerCaption=new Label("Relleno:"+'\n');
-    private ColorPicker fillercolor= new ColorPicker(fillColor);
+    private ColorPicker fillercolor= new ColorPicker(Color.YELLOW);
 
     // Dibujar una figura
     private Point startPoint;
@@ -81,17 +79,17 @@ public class PaintPane extends BorderPane {
             }
             Figure newFigure = null;
             if(rectangleButton.isSelected()) {
-                newFigure = new Rectangle(startPoint, endPoint,lineColor,fillColor,borders.getValue());
+                newFigure = new Rectangle(startPoint, endPoint,bordercolor.getValue(),fillercolor.getValue(),borders.getValue());
             }
             else if(circleButton.isSelected()) {
                 double circleRadius = startPoint.distanceTo(endPoint);
-                newFigure = new Circle(startPoint, circleRadius,lineColor,fillColor,borders.getValue());
+                newFigure = new Circle(startPoint, circleRadius,bordercolor.getValue(),fillercolor.getValue(),borders.getValue());
             }else if(lineButton.isSelected()) {
-                newFigure = new Line(startPoint, endPoint,lineColor,borders.getValue());
+                newFigure = new Line(startPoint, endPoint,bordercolor.getValue(),borders.getValue());
             }else if(ellipseButton.isSelected()){
-                newFigure= new Ellipse(startPoint,endPoint,lineColor,fillColor,borders.getValue());
+                newFigure= new Ellipse(startPoint,endPoint,bordercolor.getValue(),fillercolor.getValue(),borders.getValue());
             }else if(squareButton.isSelected()) {
-                newFigure = new Square(startPoint, endPoint,lineColor,fillColor,borders.getValue());
+                newFigure = new Square(startPoint, endPoint,bordercolor.getValue(),fillercolor.getValue(),borders.getValue());
             }else if(selectionButton.isSelected()){//SELECCION DE FIGURAS
                 canvasState.clearSelection();
                 canvasState.setSelection(startPoint,endPoint);
@@ -169,18 +167,6 @@ public class PaintPane extends BorderPane {
                 statusPane.updateStatus(label.toString());
             } else {
                 statusPane.updateStatus(eventPoint.toString());
-            }
-        });
-        bordercolor.setOnAction(new EventHandler<ActionEvent>() {//control de borde sin seleccionar
-            @Override
-            public void handle(ActionEvent event) {
-                lineColor=bordercolor.getValue();
-            }
-        });
-        fillercolor.setOnAction(new EventHandler<ActionEvent>() {//control de relleno sin seleccionar
-            @Override
-            public void handle(ActionEvent event) {
-                fillColor=fillercolor.getValue();
             }
         });
         borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE SIN SELECCIONAR
