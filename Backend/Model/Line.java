@@ -20,4 +20,8 @@ public class Line extends Figure {
     public boolean figureBelongs(Point eventPoint) {
         return false;
     }
+    @Override
+    public boolean figureBelongs(Point topleft, Point bottomright) {
+        return false;
+    }
 }

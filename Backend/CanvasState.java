@@ -24,9 +24,15 @@ public class CanvasState {
             i++;
         }
     }
-
-    public Iterable<Figure> figures() {
-        return new ArrayList<>(list);
+    public void removeFigures(Point startPoint,Point endpoint) {
+        int i = 0;
+        for (Figure aux : list) {
+            if (aux.figureBelongs(startPoint, endpoint)) {
+                list.remove(i);
+            }
+            i++;
+        }
     }
+    public Iterable<Figure> figures() { return new ArrayList<>(list); }
 
 }

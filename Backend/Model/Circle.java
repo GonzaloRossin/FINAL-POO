@@ -26,5 +26,10 @@ public class Circle extends Figure {
     public boolean figureBelongs(Point eventPoint) {
         return centerPoint.distanceTo(eventPoint)<=radius;
     }
-
+    @Override
+    public boolean figureBelongs(Point topleft, Point bottomright) {
+        boolean found;
+        found=topleft.getY()>centerPoint.getY()+getRadius() && bottomright.getY()<centerPoint.getY()-getRadius() && topleft.getX()<centerPoint.getX()-getRadius() && bottomright.getX()>centerPoint.getX()+getRadius();
+        return found;
+    }
 }

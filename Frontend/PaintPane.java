@@ -10,6 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.shape.Shape;
+import javax.naming.Binding;
 
 public class PaintPane extends BorderPane {
 
@@ -33,11 +40,11 @@ public class PaintPane extends BorderPane {
 
     //Bordes de figura
     private Slider borders = new Slider(1, 100, 1);
-    private Label borderCaption=new Label("Border:"+'\n');
-    private ColorPicker bordercolor= new ColorPicker();
+    private Label borderCaption=new Label("Borde:");
+    private ColorPicker bordercolor= new ColorPicker(lineColor);
     //Relleno
     private Label fillerCaption=new Label("Relleno:"+'\n');
-    private ColorPicker fillercolor= new ColorPicker();
+    private ColorPicker fillercolor= new ColorPicker(fillColor);
 
     // Dibujar una figura
     private Point startPoint;
@@ -66,12 +73,9 @@ public class PaintPane extends BorderPane {
         buttonsBox.getChildren().add(9,bordercolor);
         buttonsBox.getChildren().add(10,fillerCaption);
         buttonsBox.getChildren().add(11,fillercolor);
-        borders.setShowTickMarks(true);
-        borders.setShowTickLabels(true);
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
-        gc.setLineWidth(1);
         canvas.setOnMousePressed(event -> {
             startPoint = new Point(event.getX(), event.getY());
         });
@@ -96,9 +100,12 @@ public class PaintPane extends BorderPane {
                 newFigure= new Ellipse(startPoint,endPoint);
             }else if(squareButton.isSelected()) {
                 newFigure = new Square(startPoint, endPoint);
-            }else {
-                return ;
-            }
+            }else if(borders.isValueChanging()) {//AJUSTE DE GROSOR DE BORDE
+                gc.setLineWidth(borders.getValue());
+            }else if(eraseButton.isSelected()){
+                canvasState.removeFigures(startPoint,endPoint);
+                return;
+            }else{return;}
             canvasState.addFigure(newFigure);
             startPoint = null;
             redrawCanvas();
@@ -119,6 +126,27 @@ public class PaintPane extends BorderPane {
                 statusPane.updateStatus(eventPoint.toString());
             }
         });
+        bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion general de color de borde y relleno
+            @Override
+            public void handle(ActionEvent event) {
+                lineColor=bordercolor.getValue();
+                redrawCanvas();
+            }
+        });
+        fillercolor.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                fillColor=fillercolor.getValue();
+                redrawCanvas();
+            }
+        });
+        borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                gc.setLineWidth(newValue.doubleValue());
+                redrawCanvas();
+            }
+        });
         canvas.setOnMouseClicked(event -> {
             if(eraseButton.isSelected()) {//BORRADO SINGULAR
                 Point eventpoint = new Point(event.getX(), event.getY());
@@ -136,6 +164,13 @@ public class PaintPane extends BorderPane {
                     }
                 }
                 if (found) {
+                    bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion general de color de borde y relleno
+                        @Override
+                        public void handle(ActionEvent event) {
+                            selectedFigure.setColor(bordercolor.getValue());
+                            redrawCanvas();
+                        }
+                    });
                     statusPane.updateStatus(label.toString());
                 } else {
                     selectedFigure = null;
@@ -145,10 +180,7 @@ public class PaintPane extends BorderPane {
             }
         });
         canvas.setOnMouseDragged(event -> {
-            if(borders.isValueChanging()){//AJUSTE DE GROSOR DE BORDE
-                gc.setLineWidth(borders.getValue());
-                redrawCanvas();
-            }else if(selectionButton.isSelected()) {
+             if(selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 double diffX = (eventPoint.getX() - startPoint.getX()) / 100;
                 double diffY = (eventPoint.getY() - startPoint.getY()) / 100;
@@ -176,7 +208,7 @@ public class PaintPane extends BorderPane {
             if(figure == selectedFigure) {
                 gc.setStroke(Color.RED);
             } else {
-                gc.setStroke(lineColor);
+                gc.setStroke(figure.getColor());
             }
             gc.setFill(fillColor);
             if(figure instanceof Readable){

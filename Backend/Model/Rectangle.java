@@ -28,6 +28,12 @@ public class Rectangle extends Figure {
         return Math.abs(topLeft.getY() - bottomRight.getY());
     }
     @Override
+    public boolean figureBelongs(Point topleft, Point bottomright) {
+        boolean found;
+        found=topleft.getX()<this.topLeft.getX()&& this.bottomRight.getX()<bottomright.getX()&&topLeft.getY()>this.topLeft.getY()&& this.bottomRight.getY()>bottomRight.getY();
+        return found;
+    }
+    @Override
     public boolean figureBelongs(Point eventPoint) {
         boolean found;
         found = eventPoint.getX() > getTopLeft().getX() && eventPoint.getX() < getBottomRight().getX() && eventPoint.getY() > getTopLeft().getY() && eventPoint.getY() < getBottomRight().getY();
