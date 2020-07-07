@@ -76,7 +76,7 @@ public class PaintPane extends BorderPane {
             if(startPoint == null) {
                 return ;
             }
-            if(endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY()) {
+            if(!(lineButton.isSelected()||circleButton.isSelected()) && (endPoint.getX() < startPoint.getX() || endPoint.getY() < startPoint.getY())) {
                 return ;
             }
             Figure newFigure = null;
