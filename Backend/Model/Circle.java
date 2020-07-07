@@ -32,4 +32,9 @@ public class Circle extends Figure {
         found=topleft.getY()>centerPoint.getY()+getRadius() && bottomright.getY()<centerPoint.getY()-getRadius() && topleft.getX()<centerPoint.getX()-getRadius() && bottomright.getX()>centerPoint.getX()+getRadius();
         return found;
     }
+    @Override
+    public void move(double deltax, double deltay) {
+        centerPoint.x+=deltax;
+        centerPoint.y+=deltay;
+    }
 }

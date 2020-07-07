@@ -12,7 +12,7 @@ public abstract class Figure{
     public void setColor(Color color) {
         this.color = color;
     }
-
+    public abstract void move(double deltax,double deltay);
     public abstract boolean figureBelongs(Point eventPoint);
     public abstract boolean figureBelongs(Point topleft,Point bottomright);
 }

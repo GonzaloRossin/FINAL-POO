@@ -24,4 +24,12 @@ public class Line extends Figure {
     public boolean figureBelongs(Point topleft, Point bottomright) {
         return false;
     }
+    @Override
+    public void move(double deltax, double deltay) {
+
+    }
+    @Override
+    public String toString() {
+        return String.format("Linea [ %s , %s ]", p1, p2);
+    }
 }
