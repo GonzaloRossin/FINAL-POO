@@ -1,8 +1,10 @@
 package POO.F_JULIO.Backend.Model;
 
+import javafx.scene.paint.Color;
+
 public class Square extends Rectangle {
-    public Square(Point topLeft, Point bottomRight) {
-        super(topLeft, bottomRight);
+    public Square(Point p1, Point p2, Color linecolor, Color fillcolor, double linewidth) {
+        super(p1, p2, linecolor, fillcolor,linewidth);
     }
     public double Side(){return getBottomRight().x-getTopLeft().x;}
     @Override

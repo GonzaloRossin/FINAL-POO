@@ -1,12 +1,17 @@
 package POO.F_JULIO.Backend.Model;
 
+import javafx.scene.paint.Color;
+
 public class Rectangle extends Figure {
 
     private final Point topLeft, bottomRight;
 
-    public Rectangle(Point topLeft, Point bottomRight) {
+    public Rectangle(Point topLeft, Point bottomRight, Color linecolor, Color fillcolor, double linewidth) {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
+        setBordercolor(linecolor);
+        setFillercolor(fillcolor);
+        setLinewidth(linewidth);
     }
 
     public Point getTopLeft() {

@@ -1,13 +1,18 @@
 package POO.F_JULIO.Backend.Model;
 
+import javafx.scene.paint.Color;
+
 public class Circle extends Figure {
 
     protected final Point centerPoint;
     protected final double radius;
 
-    public Circle(Point centerPoint, double radius) {
+    public Circle(Point centerPoint, double radius, Color linecolor, Color fillcolor, double linewidth) {
         this.centerPoint = centerPoint;
         this.radius = radius;
+        setBordercolor(linecolor);
+        setFillercolor(fillcolor);
+        setLinewidth(linewidth);
     }
 
     @Override

@@ -46,9 +46,6 @@ public class PaintPane extends BorderPane {
     // Dibujar una figura
     private Point startPoint;
 
-    // Seleccionar una figura
-    Figure selectedFigure;
-
     // StatusBar
     StatusPane statusPane;
 
@@ -82,17 +79,17 @@ public class PaintPane extends BorderPane {
             }
             Figure newFigure = null;
             if(rectangleButton.isSelected()) {
-                newFigure = new Rectangle(startPoint, endPoint);
+                newFigure = new Rectangle(startPoint, endPoint,lineColor,fillColor,borders.getValue());
             }
             else if(circleButton.isSelected()) {
-                double circleRadius = Math.abs(endPoint.getX() - startPoint.getX());
-                newFigure = new Circle(startPoint, circleRadius);
+                double circleRadius = startPoint.distanceTo(endPoint);
+                newFigure = new Circle(startPoint, circleRadius,lineColor,fillColor,borders.getValue());
             }else if(lineButton.isSelected()) {
-                newFigure = new Line(startPoint, endPoint);
+                newFigure = new Line(startPoint, endPoint,lineColor,borders.getValue());
             }else if(ellipseButton.isSelected()){
-                newFigure= new Ellipse(startPoint,endPoint);
+                newFigure= new Ellipse(startPoint,endPoint,lineColor,fillColor,borders.getValue());
             }else if(squareButton.isSelected()) {
-                newFigure = new Square(startPoint, endPoint);
+                newFigure = new Square(startPoint, endPoint,lineColor,fillColor,borders.getValue());
             }else if(selectionButton.isSelected()){
                 canvasState.clearSelection();
                 canvasState.setSelection(startPoint,endPoint);
@@ -109,7 +106,25 @@ public class PaintPane extends BorderPane {
                         @Override
                         public void handle(ActionEvent event) {
                             for(Figure figure : canvasState.getselectedfigures()){
-                                figure.setColor(bordercolor.getValue());
+                                figure.setBordercolor(bordercolor.getValue());
+                            }
+                            redrawCanvas();
+                        }
+                    });
+                    fillercolor.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            for(Figure figure : canvasState.getselectedfigures()){
+                                figure.setFillercolor(fillercolor.getValue());
+                            }
+                            redrawCanvas();
+                        }
+                    });
+                    borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE
+                        @Override
+                        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                            for(Figure figure : canvasState.getselectedfigures()){
+                                figure.setLinewidth(newValue.doubleValue());
                             }
                             redrawCanvas();
                         }
@@ -146,24 +161,21 @@ public class PaintPane extends BorderPane {
             @Override
             public void handle(ActionEvent event) {
                 lineColor=bordercolor.getValue();
-                redrawCanvas();
             }
         });
         fillercolor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 fillColor=fillercolor.getValue();
-                redrawCanvas();
             }
         });
         borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 gc.setLineWidth(newValue.doubleValue());
-                redrawCanvas();
             }
         });
-        eraseButton.setOnAction(new EventHandler<ActionEvent>() {
+        eraseButton.setOnAction(new EventHandler<ActionEvent>() {//FUNCIONALIDAD DE BORRADO
             @Override
             public void handle(ActionEvent event) {
                 canvasState.removeSelection();
@@ -192,9 +204,10 @@ public class PaintPane extends BorderPane {
             if(canvasState.containsselection(figure)) {
                 gc.setStroke(Color.RED);
             } else {
-                gc.setStroke(figure.getColor());
+                gc.setStroke(figure.getBordercolor());
             }
-            gc.setFill(fillColor);
+            gc.setFill(figure.getFillercolor());
+            gc.setLineWidth(figure.getLinewidth());
             if(figure instanceof Rectangle){
             if(figure instanceof Ellipse){
                 Ellipse elipse=(Ellipse) figure;
