@@ -27,5 +27,11 @@ public class Rectangle extends Figure {
     public double height() {
         return Math.abs(topLeft.getY() - bottomRight.getY());
     }
+    @Override
+    public boolean figureBelongs(Point eventPoint) {
+        boolean found;
+        found = eventPoint.getX() > getTopLeft().getX() && eventPoint.getX() < getBottomRight().getX() && eventPoint.getY() > getTopLeft().getY() && eventPoint.getY() < getBottomRight().getY();
+        return found;
+    }
 
 }

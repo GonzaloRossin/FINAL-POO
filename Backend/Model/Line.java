@@ -15,4 +15,9 @@ public class Line extends Figure {
     public Point getP2() {
         return p2;
     }
+
+    @Override
+    public boolean figureBelongs(Point eventPoint) {
+        return false;
+    }
 }

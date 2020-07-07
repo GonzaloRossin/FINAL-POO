@@ -22,5 +22,9 @@ public class Circle extends Figure {
     public double getRadius() {
         return radius;
     }
+    @Override
+    public boolean figureBelongs(Point eventPoint) {
+        return centerPoint.distanceTo(eventPoint)<=radius;
+    }
 
 }

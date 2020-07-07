@@ -30,6 +30,7 @@ public class PaintPane extends BorderPane {
     ToggleButton lineButton = new ToggleButton("Linea");
     ToggleButton squareButton = new ToggleButton("Cuadrado");
     ToggleButton ellipseButton = new ToggleButton("Elipse");
+    ToggleButton eraseButton = new ToggleButton("Borrar");
 
     // Dibujar una figura
     Point startPoint;
@@ -182,20 +183,6 @@ public class PaintPane extends BorderPane {
                 gc.strokeLine(line.getP1().x,line.getP1().y,line.getP2().x,line.getP2().y);
             }
         }
-    }
-
-    boolean figureBelongs(Figure figure, Point eventPoint) {
-        boolean found = false;
-        if(figure instanceof Rectangle) {
-            Rectangle rectangle = (Rectangle) figure;
-            found = eventPoint.getX() > rectangle.getTopLeft().getX() && eventPoint.getX() < rectangle.getBottomRight().getX() &&
-                    eventPoint.getY() > rectangle.getTopLeft().getY() && eventPoint.getY() < rectangle.getBottomRight().getY();
-        } else if(figure instanceof Circle) {
-            Circle circle = (Circle) figure;
-            found = Math.sqrt(Math.pow(circle.getCenterPoint().getX() - eventPoint.getX(), 2) +
-                    Math.pow(circle.getCenterPoint().getY() - eventPoint.getY(), 2)) < circle.getRadius();
-        }
-        return found;
     }
 
 }

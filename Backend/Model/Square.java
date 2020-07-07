@@ -8,6 +8,6 @@ public class Square extends Rectangle {
     @Override
     public String toString() {
         Point aux= new Point(super.getTopLeft().x+super.getBottomRight().x,super.getTopLeft().y-super.getBottomRight().x);
-        return String.format("Rectángulo [ %s , %s ]",super.getTopLeft(), aux);
+        return String.format("Cuadrado [ %s , %s ]",super.getTopLeft(), aux);
     }
 }
