@@ -6,7 +6,7 @@ import POO.F_JULIO.Backend.Model.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectionBox {
+public class SelectionBox {//CLASE QUE MANEJA LA SELECCION DE FIGURAS
     private Point startpoint;
     private Point endpoint;
     private Iterable<Figure> figures;
@@ -16,10 +16,14 @@ public class SelectionBox {
     }
     public void selectFigures(){
         if(startpoint.equals(endpoint)){
+            Figure finalfigure=null;
             for(Figure figure:figures){
-                if(figure.figureBelongs(startpoint))
-                    selection.add(figure);
+                if(figure.figureBelongs(startpoint)) {
+                    finalfigure=figure;
+                }
             }
+            if(finalfigure!=null)
+                selection.add(finalfigure);
         }
         else{
             for(Figure figure:figures){

@@ -33,10 +33,12 @@ public class PaintPane extends BorderPane {
     private ToggleButton lineButton = new ToggleButton("Linea");
     private ToggleButton squareButton = new ToggleButton("Cuadrado");
     private ToggleButton ellipseButton = new ToggleButton("Elipse");
-    private ToggleButton eraseButton = new ToggleButton("Borrar");
+    private Button eraseButton = new Button("Borrar");
+    private Button moveToFrontButton=new Button("Al frente");
+    private Button moveToLastButton=new Button("Al fondo");
 
     //Bordes de figura
-    private Slider borders = new Slider(1, 100, 1);
+    private Slider borders = new Slider(1, 10, 1);
     private Label borderCaption=new Label("Borde:");
     private ColorPicker bordercolor= new ColorPicker(lineColor);
     //Relleno
@@ -52,7 +54,7 @@ public class PaintPane extends BorderPane {
     public PaintPane(CanvasState canvasState, StatusPane statusPane) {
         this.canvasState = canvasState;
         this.statusPane = statusPane;
-        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton,ellipseButton,lineButton,squareButton,eraseButton};
+        ToggleButton[] toolsArr = {selectionButton, rectangleButton, circleButton,ellipseButton,lineButton,squareButton};
         borderCaption.setTextFill(Color.BLACK);
         ToggleGroup tools = new ToggleGroup();
         for (ToggleButton tool : toolsArr) {
@@ -62,7 +64,7 @@ public class PaintPane extends BorderPane {
         }
         VBox buttonsBox = new VBox(10);
         buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().addAll(borderCaption,borders,bordercolor,fillerCaption,fillercolor);
+        buttonsBox.getChildren().addAll(moveToFrontButton,moveToLastButton,eraseButton,borders,bordercolor,fillerCaption,fillercolor);
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
@@ -90,7 +92,7 @@ public class PaintPane extends BorderPane {
                 newFigure= new Ellipse(startPoint,endPoint,lineColor,fillColor,borders.getValue());
             }else if(squareButton.isSelected()) {
                 newFigure = new Square(startPoint, endPoint,lineColor,fillColor,borders.getValue());
-            }else if(selectionButton.isSelected()){
+            }else if(selectionButton.isSelected()){//SELECCION DE FIGURAS
                 canvasState.clearSelection();
                 canvasState.setSelection(startPoint,endPoint);
                 boolean found = false;
@@ -102,7 +104,7 @@ public class PaintPane extends BorderPane {
                     }
                 }
                 if(found){
-                    bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion general de color de borde y relleno
+                    bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion multiple de color de borde
                         @Override
                         public void handle(ActionEvent event) {
                             for(Figure figure : canvasState.getselectedfigures()){
@@ -111,7 +113,7 @@ public class PaintPane extends BorderPane {
                             redrawCanvas();
                         }
                     });
-                    fillercolor.setOnAction(new EventHandler<ActionEvent>() {
+                    fillercolor.setOnAction(new EventHandler<ActionEvent>() {//SELECCION MULTIPLE DE COLOR DE RELLENO
                         @Override
                         public void handle(ActionEvent event) {
                             for(Figure figure : canvasState.getselectedfigures()){
@@ -120,7 +122,7 @@ public class PaintPane extends BorderPane {
                             redrawCanvas();
                         }
                     });
-                    borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE
+                    borders.valueProperty().addListener(new ChangeListener<Number>() {//SELECCION MULTIPLE DE GROSOR DE BORDE PARA SELECCIONES
                         @Override
                         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                             for(Figure figure : canvasState.getselectedfigures()){
@@ -129,7 +131,7 @@ public class PaintPane extends BorderPane {
                             redrawCanvas();
                         }
                     });
-                    statusPane.updateStatus(label.toString());//REVISAR
+                    statusPane.updateStatus(label.toString());
                 }else {
                     statusPane.updateStatus("Ninguna figura encontrada");
                 }
@@ -140,6 +142,24 @@ public class PaintPane extends BorderPane {
             }
             startPoint = null;
             redrawCanvas();
+        });
+        moveToFrontButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for(Figure figure:canvasState.getselectedfigures()){
+                    canvasState.moveToFront(figure);
+                }
+                redrawCanvas();
+            }
+        });
+        moveToLastButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                for(Figure figure:canvasState.getselectedfigures()){
+                    canvasState.moveToLast(figure);
+                }
+                redrawCanvas();
+            }
         });
         canvas.setOnMouseMoved(event -> {//MOUSEHOVER
             Point eventPoint = new Point(event.getX(), event.getY());
@@ -157,19 +177,19 @@ public class PaintPane extends BorderPane {
                 statusPane.updateStatus(eventPoint.toString());
             }
         });
-        bordercolor.setOnAction(new EventHandler<ActionEvent>() {//seleccion general de color de borde y relleno
+        bordercolor.setOnAction(new EventHandler<ActionEvent>() {//control de borde sin seleccionar
             @Override
             public void handle(ActionEvent event) {
                 lineColor=bordercolor.getValue();
             }
         });
-        fillercolor.setOnAction(new EventHandler<ActionEvent>() {
+        fillercolor.setOnAction(new EventHandler<ActionEvent>() {//control de relleno sin seleccionar
             @Override
             public void handle(ActionEvent event) {
                 fillColor=fillercolor.getValue();
             }
         });
-        borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE
+        borders.valueProperty().addListener(new ChangeListener<Number>() {//CONTROL DE GROSOR DE BORDE SIN SELECCIONAR
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 gc.setLineWidth(newValue.doubleValue());
@@ -183,7 +203,7 @@ public class PaintPane extends BorderPane {
                 redrawCanvas();
             }
         });
-        canvas.setOnMouseDragged(event -> {
+        canvas.setOnMouseDragged(event -> {//MOVIMIENTO DE FIGURAS
              if(selectionButton.isSelected()) {
                 Point eventPoint = new Point(event.getX(), event.getY());
                 double diffX = (eventPoint.getX() - startPoint.getX()) / 100;

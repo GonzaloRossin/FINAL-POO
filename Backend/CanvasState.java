@@ -5,11 +5,10 @@ import POO.F_JULIO.Backend.Model.Figure;
 import POO.F_JULIO.Backend.Model.Point;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.LinkedList;
 public class CanvasState {
 
-    private final List<Figure> list = new ArrayList<>();
+    private final LinkedList<Figure> list=new LinkedList<>();
     private SelectionBox selection=new SelectionBox(list);
 
     public void addFigure(Figure figure) {list.add(figure);}
@@ -29,5 +28,12 @@ public class CanvasState {
             list.remove(figure);
         }
     }
-
+    public void moveToFront(Figure selectedfigure){
+        list.remove(selectedfigure);
+        list.addLast(selectedfigure);
+    }
+    public void moveToLast(Figure selectedfigure){
+        list.remove(selectedfigure);
+        list.addFirst(selectedfigure);
+    }
 }
