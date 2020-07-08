@@ -62,7 +62,7 @@ public class PaintPane extends BorderPane {
         }
         VBox buttonsBox = new VBox(10);
         buttonsBox.getChildren().addAll(toolsArr);
-        buttonsBox.getChildren().addAll(moveToFrontButton,moveToLastButton,eraseButton,borders,bordercolor,fillerCaption,fillercolor);
+        buttonsBox.getChildren().addAll(moveToFrontButton,moveToLastButton,eraseButton,borderCaption,borders,bordercolor,fillerCaption,fillercolor);
         buttonsBox.setPadding(new Insets(5));
         buttonsBox.setStyle("-fx-background-color: #999");
         buttonsBox.setPrefWidth(100);
